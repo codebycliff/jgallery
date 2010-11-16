@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Default User Settings -->
+<Settings>
+	
+	<!-- General Application Settings -->
+	<Add Key="App.Name" Value="Photo Gallery" />
+	
+	<!-- Settings relating to Actions -->
+	<Add Key="Action.ZoomIn.Icon" Value="zoom-in.png" />
+	<Add Key="Action.Delete.Icon" Value="edit-delete.png" />
+	<Add Key="Action.SlideshowPrevious.Icon" Value="media-skip-backward.png" />
+	<Add Key="Action.ToggleSlideshow.Icon" Value="view-presentation.png" />
+    <Add Key="Action.SlideshowNext.Icon" Value="media-skip-forward.png" />
+    <Add Key="Action.SetAlbumIcon.Icon" Value="get-hot-new-stuff.png" />
+    <Add Key="Action.ToggleDetailsView.Icon" Value="feed-subscribe.png" />
+    <Add Key="Action.ZoomOut.Icon" Value="zoom-out.png" />
+	<Add Key="Action.AddAlbum.Icon" Value="folder-new.png" />
+    <Add Key="Action.Rename.Icon" Value="edit-rename.png" />
+    <Add Key="Action.ShowAbout.App.Icon" Value="help-about.png" />
+    <Add Key="Action.ZoomFit.Icon" Value="zoom-fit-best.png" />
+    <Add Key="Action.ToggleGalleryView.Icon" Value="view-preview.png" />
+    <Add Key="Action.AddPhoto.Icon" Value="insert-image.png" />
+    <Add Key="Action.ToggleToolbar.Icon" Value="" />
+    <Add Key="Action.SlideshowStop.Icon" Value="media-playback-stop.png" />
+    <Add Key="Action.SlideshowStart.Icon" Value="media-playback-start.png" />
+    <Add Key="Action.ShowAbout.Developers.Icon" Value="view-ldap-resource.png" />
+    <Add Key="Action.SlideshowPause.Icon" Value="media-playback-pause.png" />
+    <Add Key="Action.ConfigureApplication.Icon" Value="configure.png" />
+    <Add Key="Action.ZoomOriginal.Icon" Value="zoom-original.png" />
+    <Add Key="Action.ExitApp.Icon" Value="application-exit.png" />
+    
+    <!-- Details View Settings -->
+    <Add Key="DetailsView.Visible" Value="true" />
+    
+    <!-- Gallery View Settings -->
+    <Add Key="GalleryView.Visible" Value="true" />
+    <Add Key="GalleryView.Divider.Location" Value="200" />
+    <Add Key="GalleryView.Width.Maximum" Value="333" />
+    <Add Key="GalleryView.Album.ShowCount" Value="false" />
+    <Add Key="GalleryView.Photo.ShowName" Value="true" />
+    <Add Key="GalleryView.Photo.ThumbnailWidth" Value="128" />
+    <Add Key="GalleryView.Photo.ThumbnailHeight" Value="128" />
+    <Add Key="GalleryView.Album.Icon" Value="bookmarks-organize.png" />
+    <Add Key="GalleryView.Photo.Icon" Value="bookmarks-organize.png" />
+    <Add Key="GalleryView.Item.Icon" Value="bookmarks-organize.png" />
+    
+    <!-- Main View Settings -->
+    <Add Key="MainView.Title" Value="Photo Gallery" />
+    <Add Key="MainView.Size" Value="1000:1000" />
+    <Add Key="MainView.LeftDock.Width" Value="200" />
+    <Add Key="MainView.RightDock.Width" Value="200" />
+    <Add Key="MainView.Location.Y" Value="25" />
+    <Add Key="MainView.Location.X" Value="25" />
+
+    <!-- Photo View Settings -->
+    <Add Key="PhotoView.Background.Color" Value="808080" />
+    
+    <!-- Slideshow Settings -->
+	<Add Key="Slideshow.Interval" Value="3000" />
+	<Add Key="Slideshow.Size" Value="800:800" />
+	<Add Key="Slideshow.Location.Y" Value="50" />
+    <Add Key="Slideshow.Location.X" Value="50" />
+    <Add Key="Slideshow.BackgroundColor" Value="000000" />
+    <Add Key="Slideshow.IsFullscreenDefault" Value="false" />
+
+</Settings>

@@ -1,0 +1,9 @@
+Name=Cliff Braton
+Email=cliff.braton@gmail.com|Personal,cliff.braton@codecompanion.org|Business,crbraton@iastate.edu|School
+Hobbies=Software Development,Coding,Linux
+University=Iowa State University
+UniversityGradeLevel=Junior
+UniversityMajor=Software Engineering
+DevelopmentInterests=.NET,Python,Perl,C++,Qt Framework,Using XML
+Image=CliffBratonImage.jpg
+AboutMe=I love development, especially software development!

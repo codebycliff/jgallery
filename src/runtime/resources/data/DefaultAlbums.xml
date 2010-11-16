@@ -1,0 +1,20 @@
+
+<PhotoGallery>
+	<PhotoAlbum Name="Abstract" Description="Collection of abstract / artsy photos.">
+		<Photo Name="Abstract-1" Description="" Path="resources/images/Abstract/Abstract-1.jpg" />
+		<Photo Name="Abstract-2" Description="" Path="resources/images/Abstract/Abstract-2.jpg" />
+		<Photo Name="Abstract-3" Description="" Path="resources/images/Abstract/Abstract-3.jpg" />
+		<Photo Name="Abstract-4" Description="" Path="resources/images/Abstract/Abstract-4.jpg" />
+		<Photo Name="Abstract-5" Description="" Path="resources/images/Abstract/Abstract-5.jpg" />
+		<Photo Name="Abstract-6" Description="" Path="resources/images/Abstract/Abstract-6.jpg" />
+	</PhotoAlbum>
+	<PhotoAlbum Name="Wallpapers" Description="Set of desktop backgrounds/wallpapers.">
+		<Photo Name="Is this all there is?" Description="" Path="resources/images/Wallpapers/Is-This-All-There-Is.jpg" />
+		<Photo Name="Kitsune Noir: Operation!" Description="" Path="resources/images/Wallpapers/Kitsune-Noir-Operation.jpg" />
+		<Photo Name="The Dust of Space" Description="" Path="resources/images/Wallpapers/The-Dust-of-Space.jpg" />
+		<Photo Name="Wiki Series: 1280x800" Description="" Path="resources/images/Wallpapers/Wiki-Series-1280x800.jpg" />
+		<Photo Name="Wiki Series: 1440x900" Description="" Path="resources/images/Wallpapers/Wiki-Series-1440x900.jpg" />
+		<Photo Name="Wiki Series: 1680x1050" Description="" Path="resources/images/Wallpapers/Wiki-Series-1680x1050.jpg" />
+		<Photo Name="Wiki Series: 1920x1200" Description="" Path="resources/images/Wallpapers/Wiki-Series-1920x1200.jpg" />
+	</PhotoAlbum>
+</PhotoGallery>
