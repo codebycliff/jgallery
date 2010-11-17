@@ -6,13 +6,13 @@
               as the first entry and export the buildfile again. -->
 <project basedir="." default="build" name="PhotoGallery">
     <property environment="env"/>
-    <property name="ECLIPSE_HOME" value="../../../../a/src/java-eclipse"/>
+    <property name="ECLIPSE_HOME" value="../../../../../a/src/java-eclipse"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
     <path id="JUnit 4.libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+        <pathelement location="../../../../../a/src/eclipse/java/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar"/>
+        <pathelement location="../../../../../a/src/eclipse/java/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
     </path>
     <path id="PhotoGallery.classpath">
         <pathelement location="bin"/>
