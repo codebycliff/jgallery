@@ -1,9 +1,0 @@
-Name=Brandon Ruschill
-Email=brandon.ruschill@gmail.com|Personal
-Hobbies=Software Development,Coding,Linux
-University=Iowa State University
-UniversityGradeLevel=Junior
-UniversityMajor=Software Engineering
-DevelopmentInterests=I don't have any...
-Image=CliffBratonImage.jpg
-AboutMe=I don't do a thing!
