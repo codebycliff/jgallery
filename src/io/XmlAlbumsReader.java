@@ -1,10 +1,12 @@
 // XmlAlbumsReader.java
 package io;
 
+import java.awt.Image;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.ImageIcon;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import model.AlbumModel;
@@ -93,8 +95,14 @@ public class XmlAlbumsReader {
                 mCurrentAlbum = new AlbumModel(name);
                 mCurrentAlbum.setDescription(description);
                 if(iconpath != null) {
+                    if(Application.isResourcePath(iconpath)) {
+                        iconpath = Application.getProjectPath(iconpath);
+                    }
                     IPhotoModel icon = new PhotoModel(iconpath);
-                    mCurrentAlbum.setIcon(icon.getIcon());
+                    ((AlbumModel)mCurrentAlbum).setIconImagePath(icon.getPath());
+                    Image image = icon.getImage();
+                    Image iconImage = image.getScaledInstance(mCurrentAlbum.getIcon().getIconWidth(), mCurrentAlbum.getIcon().getIconHeight(), Image.SCALE_FAST);
+                    mCurrentAlbum.setIcon(new ImageIcon(iconImage));
                 }
                 
             } 

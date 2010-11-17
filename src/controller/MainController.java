@@ -3,7 +3,7 @@ package controller;
 
 import io.XmlSettingsWriter;
 import runtime.Application;
-import ui.view.MainView;
+import view.MainView;
 import common.IMainController;
 import common.ISettingsModel;
 

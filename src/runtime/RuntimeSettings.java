@@ -27,7 +27,7 @@ public class RuntimeSettings {
         
         mSettingsFile = new File(Constants.USER_SETTINGS_FILE);
         mAlbumsFile = new File(Constants.USER_ALBUMS_FILE);
-        mDebuggingEnabled = true;
+        mDebuggingEnabled = false;
         mErrorLog = new File(Constants.ERROR_LOG);
         mBackupFilesEnabled = false;
         

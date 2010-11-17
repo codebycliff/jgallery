@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
+import model.AlbumModel;
 import org.codecompanion.io.FileUtils;
 import runtime.Application;
 import runtime.Constants;
@@ -72,8 +73,12 @@ public class XmlAlbumsWriter {
                 
                 writer.write("\t<" + Xml.Nodes.PHOTO_ALBUM + " ");
                 writer.write(Xml.Attributes.NAME + "=\"" + album.getName() + "\" ");
-                writer.write(Xml.Attributes.DESCRIPTION + "=\"" + album.getDescription() + "\" >\n");
-                //FIX: IAlbumModel.getIconImagePath does not exist, not should it be. Find work around. -->: if(album.getIconImagePath() != null) { writer.write(Constants.Actions.XML_ATTR_ALBUMICON + "=\"" + album.getIconImagePath() + "\" "); }
+                writer.write(Xml.Attributes.DESCRIPTION + "=\"" + album.getDescription() + "\" ");
+                AlbumModel albumModel = (AlbumModel)album;
+                if(albumModel.getIconImagePath() != null) { 
+                    writer.write(Xml.Attributes.ICON+ "=\"" + albumModel.getIconImagePath() + "\""); 
+                }
+                writer.write(">\n");
                 
                 // Write each photo as seperate node under the album it belongs to.
                 for(IPhotoModel photo : album) {

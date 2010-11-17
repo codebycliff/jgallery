@@ -50,13 +50,13 @@ public class PhotoController implements IPhotoController {
         int height = (mModel.getImage().getHeight(null));
         
         boolean isWidthConstraining = width > height;
-        int sizeToRemove = 0;
         if(isWidthConstraining) {
-            sizeToRemove = width - parentWidth;
+            mZoomFactor -= (parentWidth/width);
+            mModel.scaleImage(parentWidth, height );
         } else {
-            sizeToRemove = height - parentHeight; 
+            mModel.scaleImage(width, parentHeight); 
         }
-        mModel.scaleImage(width - sizeToRemove, height - sizeToRemove);
+        
     }
 
     /*
@@ -83,46 +83,11 @@ public class PhotoController implements IPhotoController {
         mModel.scaleImage(width, height);
     }
 
-    //--------------------------------------------------------- Private Methods
-
-    /**
-     * Determines whether the current photo model this controller is controlling
-     * can zoom out another level or not.
-     * 
-     * @return true: if the photo model can zoom out one more level; false 
-     *          otherwise
-     */
-    private boolean canZoomOutMore(){
-        if(mCurZoomCount > (mStartZoomCount - mNumZoomsPerDir)){
-            return true;
-        }
-        
-        return false;
-    }
-    
-    /**
-     * Determines whether the current photo model this controller is controlling
-     * can zoom in another level or not.
-     * 
-     * @return true: if the photo model can zoom in one more level; false 
-     *          otherwise
-     */
-    private boolean canZoomInMore(){
-        if(mCurZoomCount < (mStartZoomCount + mNumZoomsPerDir)){
-            return true;
-        }
-        
-        return false;
-    }
-
     
     //---------------------------------------------------------- Private Fields
     
     private IPhotoModel mModel;
     private double mZoomFactor = 1.0;
-    private int mStartZoomCount = 0;
     private int mCurZoomCount = 0;
-    private int mNumZoomsPerDir = 10;
-
      
 }

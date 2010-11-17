@@ -1,16 +1,15 @@
 // SlideshowView.java
-package ui.view;
+package view;
 
 import java.awt.BorderLayout;
-import java.awt.DisplayMode;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -18,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -38,17 +38,12 @@ import common.IconSize;
  */
 public class SlideshowView extends JFrame implements  Runnable {
 
-    //TEMP: Move all these to the actionMap() 
-    public StartSlideshowAction StartAction = new StartSlideshowAction();
-    public StopSlideshowAction StopAction = new StopSlideshowAction();
-    public PauseSlideshowAction PauseAction = new PauseSlideshowAction();
-    public SlideshowNextAction NextAction = new SlideshowNextAction();
-    public SlideshowPreviousAction PreviousAction = new SlideshowPreviousAction();
-    public ToggleFullscreenAction ExitFullscreen = new ToggleFullscreenAction(ToggleFullscreenAction.EXIT_FULLSCREEN);
-    public ToggleFullscreenAction EnterFullscreen = new ToggleFullscreenAction(ToggleFullscreenAction.EXIT_FULLSCREEN);
-    public static GraphicsDevice GraphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+    public static final String START_ACTION = "StartSlideshowAction";
+    public static final String STOP_ACTION = "StopSlideshowAction";
+    public static final String PAUSE_ACTION = "PauseSlideshowAction";
+    public static final String NEXT_ACTION = "SlideshowNextAction";
+    public static final String PREVIOUS_ACTION = "SlideshowPreviousAction";
 
-    
     /**
      * Constructor that instantiates a new slideshow and initializes its model
      * to the model passed in.
@@ -56,8 +51,9 @@ public class SlideshowView extends JFrame implements  Runnable {
      * @param model: the album model containing the photos to be displayed in
      *      this slideshow.
      */
-    public SlideshowView(IAlbumModel model) {
+    public SlideshowView(Frame parentFrame, IAlbumModel model) {
         super(GraphicsDevice.getDefaultConfiguration());
+        mParentFrame = parentFrame;
         mModel = model;
 
         // Setup the view...
@@ -215,18 +211,15 @@ public class SlideshowView extends JFrame implements  Runnable {
         mIsFullScreen = value;
         if (mIsFullScreen) {
             if (supportsFullscreen()) {
-                GraphicsDevice.setFullScreenWindow(this);
                 setUndecorated(true);
+                GraphicsDevice.setFullScreenWindow(this);
                 setIgnoreRepaint(true);
             }
         }
         else {
-            DisplayMode displayMode = GraphicsDevice.getDisplayMode();
-            int xoff = (displayMode.getWidth()- getWidth()) / 2;
-            int yoff = (displayMode.getHeight() - getHeight()) / 2;
-            setBounds(xoff, yoff, getWidth(), getHeight());
-            setUndecorated(false);
-            setIgnoreRepaint(false);
+            setUndecorated(true);
+            setResizable(false);
+            setBounds(mParentFrame.getBounds());
         }
     }
 
@@ -257,13 +250,41 @@ public class SlideshowView extends JFrame implements  Runnable {
                     "Image was unexpectedly null! Index in image array: "
                             + mCurrentIndex);
         }
-
-        int imageWidth = image.getWidth(null);
-        int imageHeight = image.getHeight(null);
         
-        int offsetX = (this.getWidth() - imageWidth) / 2;
-        int offsetY = ((getHeight() - mToolBar.getHeight()) - imageHeight) / 2;
-        g.drawImage(image, offsetX, offsetY, getBackground(), null);
+        int newWidth = 0;
+        int newHeight = 0;
+        int imageHeight = image.getHeight(null);
+        int imageWidth = image.getWidth(null);
+        
+        if(image.getWidth(null) > image.getHeight(null)) {
+            newWidth = this.getWidth();
+            newHeight = imageHeight;
+        }
+        else {
+            newWidth = imageWidth;
+            newHeight = this.getHeight();
+        }
+        double thumbRatio = (double)newWidth/ (double)newHeight;
+        double imageRatio = (double)imageWidth/ 
+            (double)imageHeight;
+        
+        if (thumbRatio < imageRatio) {
+            newHeight = (int)(newWidth/ imageRatio);
+        } else {
+            newWidth = (int)(newHeight * imageRatio);
+        }
+        
+        int offsetX = (this.getWidth() - newWidth) / 2;
+        int offsetY = (this.getHeight() - newHeight) / 2;
+        
+        Graphics2D g2 = (Graphics2D)g;
+        g2.setBackground(getBackground());
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.drawImage(image, offsetX,offsetY, newWidth, newHeight, null);
+        
+        mToolBar.invalidate();
+        mToolBar.validate();
+        mToolBar.repaint();
     }
 
     // -------------------------------------------------------- Private Methods
@@ -324,11 +345,6 @@ public class SlideshowView extends JFrame implements  Runnable {
         PauseAction.setEnabled((isRunning() && !isPaused()) && hasNext());
         NextAction.setEnabled(hasNext());
         PreviousAction.setEnabled(hasPrevious());
-//        StartAction.setEnabled(true);
-//        StopAction.setEnabled(true);
-//        PauseAction.setEnabled(true);
-//        NextAction.setEnabled(true);
-//        PreviousAction.setEnabled(true);
     }
 
     /**
@@ -336,7 +352,13 @@ public class SlideshowView extends JFrame implements  Runnable {
      * components.
      */
     private void initialize() {
-
+        ActionMap am = new ActionMap();
+        am.put(START_ACTION, StartAction);
+        am.put(STOP_ACTION, StopAction);
+        am.put(PAUSE_ACTION, PauseAction);
+        am.put(PREVIOUS_ACTION, PreviousAction);
+        am.put(NEXT_ACTION, NextAction);
+        
         // Initialize members...
         mHasRanPreviously = false;
         mCurrentIndex = 0;
@@ -351,6 +373,7 @@ public class SlideshowView extends JFrame implements  Runnable {
         for (IPhotoModel photo : mModel) {
             mImages.add(photo.getImage());
         }
+        
 
         // Set up the toolbar with the actions...
         mToolBar = new JToolBar();
@@ -361,6 +384,8 @@ public class SlideshowView extends JFrame implements  Runnable {
         mToolBar.add(PauseAction);
         mToolBar.add(PreviousAction);
         mToolBar.add(NextAction);
+        
+        
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panel.add(mToolBar);
         getContentPane().add(panel, BorderLayout.SOUTH);
@@ -370,37 +395,11 @@ public class SlideshowView extends JFrame implements  Runnable {
         mPopUpMenu = new JPopupMenu();
         mPopUpMenu.addPopupMenuListener(new ToggleFullscreenListener());
         addMouseListener(new MousePopupListener());
-
-        // Register the key listener for the escape key to close slideshow...
-        addKeyListener(new KeyListener() {
-
-            @Override
-            public void keyTyped(KeyEvent e) {
-                hideIfEscapeKey(e);
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                hideIfEscapeKey(e);
-            }
-
-            private void hideIfEscapeKey(KeyEvent e) {
-                int escapeKey = KeyEvent.VK_ESCAPE;
-                if (e.getKeyCode() == escapeKey) {
-                    StopAction.actionPerformed(null);
-                }
-            }
-        });
-
+        
         // Set up frame's properties
         setFullscreen(mIsFullScreen);
+        setAlwaysOnTop(true);
         setBackground(Application.Settings.getColor(ConfigKeys.Slideshow.BACKGROUND_COLOR));
-        setSize(Application.Settings.getDimension(ConfigKeys.Slideshow.SIZE));
-        
     }
     
     
@@ -411,7 +410,7 @@ public class SlideshowView extends JFrame implements  Runnable {
      * simply a call to the associated member, followed by a call to 
      * toggleActions() to update the rest of the action's enabled state.
      */
-    public class StartSlideshowAction extends AbstractAction {
+    private class StartSlideshowAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new start slideshow action.
@@ -440,7 +439,7 @@ public class SlideshowView extends JFrame implements  Runnable {
      * simply a call to the associated member, followed by a call to 
      * toggleActions() to update the rest of the action's enabled state.
      */
-    public class StopSlideshowAction extends AbstractAction {
+    private class StopSlideshowAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new stop slideshow action.
@@ -469,7 +468,7 @@ public class SlideshowView extends JFrame implements  Runnable {
      * simply a call to the associated member, followed by a call to 
      * toggleActions() to update the rest of the action's enabled state.
      */
-    public class PauseSlideshowAction extends AbstractAction {
+    private class PauseSlideshowAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new pause slideshow action.
@@ -503,7 +502,7 @@ public class SlideshowView extends JFrame implements  Runnable {
      * implementation is simply a call to the associated member, followed by a 
      * call to toggleActions() to update the rest of the action's enabled state.
      */
-    public class ToggleFullscreenAction extends AbstractAction {
+    private class ToggleFullscreenAction extends AbstractAction {
 
         /** Constant representing ENTER_FULLSCREEN. */
         public static final String ENTER_FULLSCREEN = "Enter Fullscreen Mode";
@@ -524,10 +523,14 @@ public class SlideshowView extends JFrame implements  Runnable {
         /*
          * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
          */
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent ae) {
             if (getValue(NAME).toString().compareTo(ENTER_FULLSCREEN) == 0) {
-                setFullscreen(true);
-                putValue(NAME, EXIT_FULLSCREEN);
+                try {
+                    setFullscreen(true);
+                    putValue(NAME, EXIT_FULLSCREEN);
+                } catch(Exception e) {
+                    Application.dump(e);
+                }
             }
             else {
                 setFullscreen(false);
@@ -543,7 +546,7 @@ public class SlideshowView extends JFrame implements  Runnable {
      * simply a call to the associated member, followed by a call to 
      * toggleActions() to update the rest of the action's enabled state.
      */
-    public class SlideshowNextAction extends AbstractAction {
+    private class SlideshowNextAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new slideshow next action.
@@ -572,7 +575,7 @@ public class SlideshowView extends JFrame implements  Runnable {
      * simply a call to the associated member, followed by a call to 
      * toggleActions() to update the rest of the action's enabled state.
      */
-    public class SlideshowPreviousAction extends AbstractAction {
+    private class SlideshowPreviousAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new slideshow previous
@@ -635,8 +638,8 @@ public class SlideshowView extends JFrame implements  Runnable {
                 mPopUpMenu.show(SlideshowView.this, e.getX(), e.getY());
             }
         }
-
     }
+    
 
     /**
      * The listener interface for receiving toggleFullscreen events. The class
@@ -711,5 +714,11 @@ public class SlideshowView extends JFrame implements  Runnable {
     private JToolBar mToolBar;
     private JPopupMenu mPopUpMenu;
     private final Object mPauseLock = new Object();
-    
+    private Frame mParentFrame;
+    private StartSlideshowAction StartAction = new StartSlideshowAction();
+    private StopSlideshowAction StopAction = new StopSlideshowAction();
+    private PauseSlideshowAction PauseAction = new PauseSlideshowAction();
+    private SlideshowNextAction NextAction = new SlideshowNextAction();
+    private SlideshowPreviousAction PreviousAction = new SlideshowPreviousAction();
+    private static GraphicsDevice GraphicsDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 }

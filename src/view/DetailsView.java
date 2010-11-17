@@ -1,5 +1,5 @@
 // DetailsView.java
-package ui.view;
+package view;
 
 import java.awt.Color;
 import java.awt.Component;

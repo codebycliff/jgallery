@@ -1,5 +1,5 @@
 // PhotoView.java
-package ui.view;
+package view;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,7 +7,8 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
-import javax.swing.JComponent;
+import javax.swing.ActionMap;
+import javax.swing.JPanel;
 import runtime.Application;
 import runtime.Constants.ConfigKeys;
 import common.ChangeType;
@@ -23,8 +24,13 @@ import controller.PhotoController;
 /**
  * Class that provides a viewing area of a photo model.
  */
-public class PhotoView extends JComponent implements ISelectionObserver, IChangeObserver {
+public class PhotoView extends JPanel implements ISelectionObserver, IChangeObserver {
 
+    public static final String ZOOMIN_ACTION = "ZoomInPhotoAction";
+    public static final String ZOOMOUT_ACTION = "ZoomOutPhotoAction";
+    public static final String ZOOMFIT_ACTION = "ZoomToFitAction";
+    public static final String ZOOMORIGINAL_ACTION = "ZoomOriginalPhotoAction";
+    
     /**
      * Default constructor that instantiates a new photo view with both it's
      * model and controller null;
@@ -52,6 +58,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
         if(mModel.getImage() != null) {
             repaint();
         }
+        
     }
     
     /**
@@ -94,6 +101,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
     public void update(IItemModel selected) {
         if(selected instanceof IPhotoModel) {
             setPhoto((IPhotoModel) selected);
+            mController.zoomToFit(this.getSize());
         }
     }
 
@@ -147,6 +155,14 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
      * parts of the photo view.
      */
     private void initialize() {
+
+        ActionMap actMap = new ActionMap();
+        actMap.put(ZOOMIN_ACTION, new ZoomInPhotoAction());
+        actMap.put(ZOOMOUT_ACTION, new ZoomOutPhotoAction());
+        actMap.put(ZOOMFIT_ACTION, new ZoomToFitAction());
+        actMap.put(ZOOMORIGINAL_ACTION, new ZoomOriginalAction());
+        setActionMap(actMap);
+        
         mBackgroundColor = Application.Settings.getColor(ConfigKeys.PhotoView.BACKGROUND_COLOR);
         setBackground(mBackgroundColor);
     }
@@ -158,7 +174,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
      * A class that defines the zoom in action. The implementation is simply
      * a call to the controller to let it know the action was requested.
      */
-    public class ZoomInPhotoAction extends AbstractAction {
+    private class ZoomInPhotoAction extends AbstractAction {
         
         /**
          * Default constructor that instantiates a new zoom in photo action.
@@ -185,7 +201,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
      * A class that defines the zoom out action. The implementation is simply
      * a call to the controller to let it know the action was requested.
      */
-    public class ZoomOutPhotoAction extends AbstractAction {
+    private class ZoomOutPhotoAction extends AbstractAction {
         
         /**
          * Default constructor that instantiates a new zoom out photo action.
@@ -211,7 +227,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
      * A class that defines the zoom to fit action. The implementation is simply
      * a call to the controller to let it know the action was requested.
      */
-    public class ZoomToFitAction extends AbstractAction {
+    private class ZoomToFitAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new zoom to fit action.
@@ -227,7 +243,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
          */
         @Override
         public void actionPerformed(ActionEvent e) {
-            mController.zoomToFit(getSize());
+            mController.zoomToFit(PhotoView.this.getSize());
         }
         
     }
@@ -236,7 +252,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
      * A class that defines the zoom original action. The implementation is 
      * simply a call to the controller to let it know the action was requested.
      */
-    public class ZoomOriginalAction extends AbstractAction {
+    private class ZoomOriginalAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new zoom original action.

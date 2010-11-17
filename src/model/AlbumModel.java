@@ -53,9 +53,11 @@ public class AlbumModel extends DefaultItemModel implements IAlbumModel  {
      * @return String: the path to the image of this album's icon
      */
     public String getIconImagePath() {
-        if(mIconImagePath != null)
-            return mIconImagePath;
-        return null;
+        return mIconImagePath;
+    }
+    
+    public void setIconImagePath(String path) {
+        mIconImagePath = path;
     }
     
     // ----------------------------------------------------------- IAlbumModel 
@@ -101,7 +103,7 @@ public class AlbumModel extends DefaultItemModel implements IAlbumModel  {
     @Override
     public void setIcon(Icon icon) {
         mIcon = icon;
-        // notifyObservers
+        notifyChangeObservers(new ItemChangeEvent(this, this, ChangeType.STATE));
     }
 
     /*

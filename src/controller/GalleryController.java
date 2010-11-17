@@ -1,7 +1,9 @@
 // GalleryController.java
 package controller;
 
+import java.awt.Image;
 import java.io.File;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
@@ -138,7 +140,10 @@ public class GalleryController implements IGalleryController {
         if(itemModel instanceof IPhotoModel) {
             IPhotoModel photoModel = (IPhotoModel)itemModel;
             IAlbumModel album = photoModel.getAlbum();
-            album.setIcon(photoModel.getIcon());
+            Image image = photoModel.getImage();
+            Image iconImage = image.getScaledInstance(album.getIcon().getIconWidth(), album.getIcon().getIconHeight(), Image.SCALE_FAST);
+            album.setIcon(new ImageIcon(iconImage));
+            ((AlbumModel)album).setIconImagePath(photoModel.getPath());
         }
     }
 

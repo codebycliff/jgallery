@@ -1,5 +1,5 @@
 // GalleryView.java
-package ui.view;
+package view;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
@@ -37,6 +38,12 @@ import common.ItemChangeEvent;
  */
 public class GalleryView extends JTree implements  IChangeObserver {
 
+    public static final String ADDALBUM_ACTION = "AddAlbumAction";
+    public static final String ADDPHOTO_ACTION = "AddPhotoToAlbumAction";
+    public static final String RENAME_ACTION = "RenameItemAction";
+    public static final String SETALBUMICON_ACTION = "SetPhotoAsAlbumIconAction";
+    public static final String REMOVE_ACTION = "RemoveItemAction";
+    
     /**
      * Constructor that instantiates an new instance of gallery view with
      * the specified model and controller.
@@ -52,6 +59,14 @@ public class GalleryView extends JTree implements  IChangeObserver {
         
         initialize();
         
+        ActionMap actions = new ActionMap();
+        actions.put(ADDALBUM_ACTION, new AddAlbumAction());
+        actions.put(ADDPHOTO_ACTION, new AddPhotoToAlbumAction());
+        actions.put(RENAME_ACTION, new RenameItemAction());
+        actions.put(SETALBUMICON_ACTION, new SetPhotoAsAlbumIconAction());
+        actions.put(REMOVE_ACTION, new RemoveItemAction());
+        
+        setActionMap(actions);
         setCellRenderer(new ItemNodeRenderer());
         addMouseListener(new MousePopupListener());
         addTreeSelectionListener(new ItemNodeSelectionListener());
@@ -122,6 +137,8 @@ public class GalleryView extends JTree implements  IChangeObserver {
                 mTreeModel.removeNodeFromParent(lastSelectedNode);
             }
             break;
+        case STATE:
+            break;
         }
     }
     
@@ -131,7 +148,7 @@ public class GalleryView extends JTree implements  IChangeObserver {
      * A class that defines the add album action. The implementation is simply
      * a call to the controller to let it know the action was requested.
      */
-    public class AddAlbumAction extends AbstractAction {
+    private class AddAlbumAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new adds the album action.
@@ -159,7 +176,7 @@ public class GalleryView extends JTree implements  IChangeObserver {
      * A class that defines the remove item action. The implementation is simply
      * a call to the controller to let it know the action was requested.
      */
-    public class RemoveItemAction extends AbstractAction {
+    private class RemoveItemAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new removes the item action.
@@ -186,7 +203,7 @@ public class GalleryView extends JTree implements  IChangeObserver {
      * A class that defines the rename item action. The implementation is simply
      * a call to the controller to let it know the action was requested.
      */
-    public class RenameItemAction extends AbstractAction {
+    private class RenameItemAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new rename item action.
@@ -214,7 +231,7 @@ public class GalleryView extends JTree implements  IChangeObserver {
      * implementation is simply a call to the controller to let it know the 
      * action was requested.
      */
-    public class SetPhotoAsAlbumIconAction extends AbstractAction {
+    private class SetPhotoAsAlbumIconAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new sets the photo as album
@@ -242,7 +259,7 @@ public class GalleryView extends JTree implements  IChangeObserver {
      * A class that defines the add photo to album action. The implementation is 
      * simply a call to the controller to let it know the action was requested.
      */
-    public class AddPhotoToAlbumAction extends AbstractAction {
+    private class AddPhotoToAlbumAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new adds the photo to album
@@ -294,7 +311,6 @@ public class GalleryView extends JTree implements  IChangeObserver {
             if (node == null) {
                 return;
             }
-
             IItemModel selectedItem = (IItemModel) node.getUserObject();
             mController.selectItem(selectedItem);
         }
@@ -307,7 +323,11 @@ public class GalleryView extends JTree implements  IChangeObserver {
      * with varying properties.
      */
     private class ItemNodeRenderer extends JLabel implements TreeCellRenderer {
-
+        
+        public ItemNodeRenderer() {
+            super();
+        }
+        
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value,
                 boolean selected, boolean expanded, boolean leaf, int row,
@@ -328,18 +348,21 @@ public class GalleryView extends JTree implements  IChangeObserver {
                     setIcon(photoModel.getIcon());
                     if(mDisplayPhotoName) {
                         setText(photoModel.getName());
+//                        setHorizontalTextPosition(CENTER);
+//                        setVerticalTextPosition(BOTTOM);
                     }
                 }
                 else if(selectedItem instanceof IAlbumModel) {
                     IAlbumModel albumModel = (IAlbumModel)selectedItem;
                     setIcon(albumModel.getIcon());
+                    setText(albumModel.getName());
+//                    setHorizontalTextPosition(RIGHT);
+//                    setVerticalTextPosition(CENTER);
                     if(mDisplayAlbumCount) {
-                        setText(albumModel.getName() + " (" + albumModel.getCount() + ")"); 
-                    }
-                    else {
-                        setText(albumModel.getName());
+                        setText(getText()+ " (" + albumModel.getCount() + ")"); 
                     }
                 }
+                setIconTextGap(6);
                 setToolTipText(((DefaultItemModel) selectedItem).getDescription());
             }
             return this;
@@ -372,15 +395,20 @@ public class GalleryView extends JTree implements  IChangeObserver {
         @Override
         public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
             
+            if(mModel.getLastSelected() == null) {
+                mPopupMenu.add(new AddAlbumAction());
+                return;
+            }
+            
             mPopupMenu.add(new RemoveItemAction());
             mPopupMenu.add(new RenameItemAction());
-            
+                        
             if(mModel.getLastSelected() instanceof IPhotoModel) {
-                mPopupMenu.add(new AddPhotoToAlbumAction());
                 mPopupMenu.add(new SetPhotoAsAlbumIconAction());
             }
             else {
-                mPopupMenu.add(new AddAlbumAction());
+
+                mPopupMenu.add(new AddPhotoToAlbumAction());
             }
         }
 

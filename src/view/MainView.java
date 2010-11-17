@@ -1,5 +1,5 @@
 // MainView.java
-package ui.view;
+package view;
 
 import io.XmlAlbumsReader;
 import io.XmlAlbumsWriter;
@@ -9,9 +9,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
-import java.util.List;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -30,7 +32,6 @@ import org.codecompanion.ui.dialogs.LookAndFeelChooser;
 import runtime.Application;
 import runtime.Constants;
 import runtime.Constants.ConfigKeys;
-import ui.AboutApplicationDialog;
 import com.javadocking.DockingManager;
 import com.javadocking.dock.CompositeDock;
 import com.javadocking.dock.Position;
@@ -139,32 +140,39 @@ public class MainView extends JFrame implements ISelectionObserver {
         unserializeState();
         
         addComponentListener(new ComponentListener() {
-            
             @Override
-            public void componentShown(ComponentEvent e) {
-                // TODO Auto-Generated Method Stub
-                
-            }
-            
+            public void componentShown(ComponentEvent e) {}            
             @Override
             public void componentResized(ComponentEvent e) {
                 if(!mDetailsViewDock.isVisible()) {
                     mRightSplitPane.setDividerLocation(getWidth()-10);
                 }
             }
-            
             @Override
-            public void componentMoved(ComponentEvent e) {
-                // TODO Auto-Generated Method Stub
-                
-            }
-            
+            public void componentMoved(ComponentEvent e) {}
             @Override
-            public void componentHidden(ComponentEvent e) {
-                // TODO Auto-Generated Method Stub
-                
-            }
+            public void componentHidden(ComponentEvent e) {}
         });
+        
+        addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {}
+            @Override
+            public void windowIconified(WindowEvent e) {}
+            @Override
+            public void windowDeiconified(WindowEvent e) {}
+            @Override
+            public void windowDeactivated(WindowEvent e) {}
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mExitApplicationAction.actionPerformed(null);
+            }
+            @Override
+            public void windowClosed(WindowEvent e) {}
+            @Override
+            public void windowActivated(WindowEvent e) {}
+        });
+
     }
     
     /**
@@ -193,25 +201,25 @@ public class MainView extends JFrame implements ISelectionObserver {
 
         // This view's actions...
         mExitApplicationAction = new ExitApplicationAction();
-        mShowAboutApplicationAction = new ShowAboutApplicationAction();
-        mShowAboutDevelopersAction = new ShowAboutDevelopersAction();
         mTogglePropertiesViewAction = new ToggleDetailsViewAction();
         mToggleAlbumsViewAction = new ToggleGalleryViewAction();
         mOpenSlideshowAction = new OpenSlideshowAction();
         mToggleToolBarAction = new ToggleToolBarAction();
 
         // Gallery view's actions...
-        mAddAlbumAction = mGalleryView.new AddAlbumAction();
-        mRemoveItemAction = mGalleryView.new RemoveItemAction();
-        mRenameItemAction = mGalleryView.new RenameItemAction();
-        mSetAlbumIconAction = mGalleryView.new SetPhotoAsAlbumIconAction();
-        mAddPhotoToAlbumAction = mGalleryView.new AddPhotoToAlbumAction();
+        ActionMap galleryActions = mGalleryView.getActionMap();
+        mAddAlbumAction = galleryActions.get(GalleryView.ADDALBUM_ACTION);
+        mRemoveItemAction = galleryActions.get(GalleryView.REMOVE_ACTION);
+        mRenameItemAction = galleryActions.get(GalleryView.RENAME_ACTION);
+        mSetAlbumIconAction = galleryActions.get(GalleryView.SETALBUMICON_ACTION);
+        mAddPhotoToAlbumAction = galleryActions.get(GalleryView.ADDPHOTO_ACTION);
 
         // Photo view's actions...
-        mZoomInPhotoAction = mPhotoView.new ZoomInPhotoAction();
-        mZoomOutPhotoAction = mPhotoView.new ZoomOutPhotoAction();
-        mZoomOriginalAction = mPhotoView.new ZoomOriginalAction();
-        mZoomToFitAction = mPhotoView.new ZoomToFitAction();
+        ActionMap photoActions = mPhotoView.getActionMap();
+        mZoomInPhotoAction = photoActions.get(PhotoView.ZOOMIN_ACTION);
+        mZoomOutPhotoAction = photoActions.get(PhotoView.ZOOMOUT_ACTION);
+        mZoomOriginalAction = photoActions.get(PhotoView.ZOOMORIGINAL_ACTION);
+        mZoomToFitAction = photoActions.get(PhotoView.ZOOMFIT_ACTION);
 
     }
 
@@ -259,40 +267,24 @@ public class MainView extends JFrame implements ISelectionObserver {
         showHideToolbar.setState(true);
         mViewMenu.add(showHideToolbar);
         mViewMenu.add(new JSeparator());
-
+        LookAndFeelChooser chooser = new LookAndFeelChooser(this);
+        for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            chooser.registerLookAndFeelInfo(info);
+        }
+        
+        JMenu plafMenu = chooser.getChooserMenu();
+        plafMenu.setMnemonic('L');
+        mViewMenu.add(plafMenu);
         mViewMenu.add(new JSeparator());
         mViewMenu.add(mZoomToFitAction);
         mViewMenu.add(mZoomOriginalAction);
         mViewMenu.add(mZoomOutPhotoAction);
         mViewMenu.add(mZoomInPhotoAction);
 
-        this.mSettingsMenu = new JMenu("Settings");
-        LookAndFeelChooser chooser = new LookAndFeelChooser(this);
-        for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-            chooser.registerLookAndFeelInfo(info);
-        }
-        for(String key : Application.Runtime.extraLookAndFeels().keySet()) {
-            List<LookAndFeelInfo> landfs = Application.Runtime.extraLookAndFeels().get(key);
-            for(LookAndFeelInfo info : landfs) {
-                chooser.registerLookAndFeelInfo(info);
-            }
-        }
-        
-        JMenu plafMenu = chooser.getChooserMenu();
-        plafMenu.setMnemonic('L');
-        mSettingsMenu.add(plafMenu);
-
-        // Help Menu
-        this.mHelpMenu = new JMenu("Help");
-//        mHelpMenu.add(mShowAboutDevelopersAction);
-        mHelpMenu.add(mShowAboutApplicationAction);
-
         // Add menus to menubar and set the menubar
         mMenuBar.add(mFileMenu);
         mMenuBar.add(mEditMenu);
         mMenuBar.add(mViewMenu);
-        mMenuBar.add(mSettingsMenu);
-        mMenuBar.add(mHelpMenu);
 
         setJMenuBar(this.mMenuBar);
 
@@ -519,7 +511,7 @@ public class MainView extends JFrame implements ISelectionObserver {
      * state, writing settings and gallery contents before it exits
      * the application.
      */
-    public class ExitApplicationAction extends AbstractAction {
+    private class ExitApplicationAction extends AbstractAction {
 
         public ExitApplicationAction() {
             putValue(NAME, "Exit Application");
@@ -559,77 +551,12 @@ public class MainView extends JFrame implements ISelectionObserver {
 
     }
 
-    /**
-     * A class that defines the show about application action. This action is 
-     * responsible for displaying the about application dialog to the user.
-     */
-    public class ShowAboutApplicationAction extends AbstractAction {
-
-        /**
-         * Default constructor that instantiates a new show about application
-         * action.
-         */
-        public ShowAboutApplicationAction() {
-            putValue(NAME, "About Application");
-            putValue(SMALL_ICON,
-                    Application.Settings
-                            .getIcon(ConfigKeys.Actions.SHOWABOUT_APP_ICON, IconSize.SMALL));
-            putValue(LARGE_ICON_KEY,
-                    Application.Settings
-                            .getIcon(ConfigKeys.Actions.SHOWABOUT_APP_ICON, IconSize.LARGE));
-            putValue(SHORT_DESCRIPTION, "About this application...");
-        }
-
-        /*
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            AboutApplicationDialog dialog = new AboutApplicationDialog();
-            dialog.setVisible(true);
-        }
-
-    }
-
-    /**
-     * A class that defines the show about developer action. This action is 
-     * responsible for displaying the about developer dialog to the user.
-     */
-    public class ShowAboutDevelopersAction extends AbstractAction {
-
-        /**
-         * Default constructor that instantiates a new show about developers
-         * action.
-         */
-        public ShowAboutDevelopersAction() {
-            putValue(NAME, "About Developers");
-            putValue(
-                    SMALL_ICON,
-                    Application.Settings
-                            .getIcon(ConfigKeys.Actions.SHOWABOUT_DEVELOPERS_ICON, IconSize.SMALL));
-            putValue(
-                    LARGE_ICON_KEY,
-                    Application.Settings
-                            .getIcon(ConfigKeys.Actions.SHOWABOUT_DEVELOPERS_ICON, IconSize.LARGE));
-            putValue(SHORT_DESCRIPTION, "Learn about the developers...");
-        }
-
-        /*
-         * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-         */
-        @Override
-        public void actionPerformed(ActionEvent e) {
-//            AboutDeveloperDialog dialog = new AboutDeveloperDialog();
-//            dialog.setVisible(true);
-        }
-
-    }
 
     /**
      * A class that defines the toggle details action. This action is 
      * responsible for toggliing the visibility of the details view.
      */
-    public class ToggleDetailsViewAction extends AbstractAction {
+    private class ToggleDetailsViewAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new toggle details view
@@ -681,7 +608,7 @@ public class MainView extends JFrame implements ISelectionObserver {
      * A class that defines the toggle gallery view action. This action is 
      * responsible for toggling the visibility of the gallery view.
      */
-    public class ToggleGalleryViewAction extends AbstractAction {
+    private class ToggleGalleryViewAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new toggle gallery view
@@ -734,7 +661,7 @@ public class MainView extends JFrame implements ISelectionObserver {
      * A class that defines the toggle toolbar action. This action is 
      * responsible for toggling the visibility of the main toolbar.
      */
-    public class ToggleToolBarAction extends AbstractAction {
+    private class ToggleToolBarAction extends AbstractAction {
 
         /**
          * Default constructor that instantiates a new toggle tool bar action.
@@ -762,7 +689,7 @@ public class MainView extends JFrame implements ISelectionObserver {
      * A class that defines the open slideshow action. This action is 
      * responsible for creating and displaying the slideshow view to the user.
      */
-    public class OpenSlideshowAction extends AbstractAction {
+    private class OpenSlideshowAction extends AbstractAction {
 
         private OpenSlideshowAction() {
             putValue(NAME, "Start Slideshow");
@@ -782,7 +709,7 @@ public class MainView extends JFrame implements ISelectionObserver {
         @Override
         public void actionPerformed(ActionEvent arg0) {
             IAlbumModel album = mGalleryModel.getLastSelectedAlbum();
-            SlideshowView slideshowView = new SlideshowView(album);
+            SlideshowView slideshowView = new SlideshowView(MainView.this, album);
             slideshowView.setVisible(true);
         }
 
@@ -809,8 +736,6 @@ public class MainView extends JFrame implements ISelectionObserver {
     private JMenu mFileMenu;
     private JMenu mEditMenu;
     private JMenu mViewMenu;
-    private JMenu mSettingsMenu;
-    private JMenu mHelpMenu;
     private JToolBar mToolBar;
     private JToggleButton mGalleryViewToggleButton;
     private JToggleButton mDetailsViewToggleButton;
@@ -823,8 +748,6 @@ public class MainView extends JFrame implements ISelectionObserver {
     private Action mZoomOriginalAction;
     private Action mZoomOutPhotoAction;
     private Action mZoomInPhotoAction;
-    private Action mShowAboutDevelopersAction;
-    private Action mShowAboutApplicationAction;
     private Action mAddAlbumAction;
     private Action mRemoveItemAction;
     private Action mRenameItemAction;
