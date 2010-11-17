@@ -93,7 +93,7 @@ public class PhotoView extends JComponent implements ISelectionObserver, IChange
     @Override
     public void update(IItemModel selected) {
         if(selected instanceof IPhotoModel) {
-//            setPhoto(selected);
+            setPhoto((IPhotoModel) selected);
         }
     }
 

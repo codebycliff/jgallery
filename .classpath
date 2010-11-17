@@ -5,6 +5,25 @@
 	<classpathentry kind="lib" path="src/runtime/resources/lib/javadocking.jar"/>
 	<classpathentry kind="lib" path="src/runtime/resources/lib/metadata-extractor-2.3.1.jar"/>
 	<classpathentry kind="lib" path="src/runtime/resources/lib/JCompanion.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Alloy-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/InfoNode-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/JGoodies-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/JTattoo-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Lipstik-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Liquid-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Napkin-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/NimROD-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Pgs-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Quaqua-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Squareness-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Substance-Trident.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/substance.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/swingx-1.6.2-javadoc.zip"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/swingx-1.6.2-sources.zip"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/swingx-beaninfo-1.6.2.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/swingx-core-1.6.2.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Synthetica-LAF.jar"/>
+	<classpathentry kind="lib" path="src/runtime/resources/lib/Tiny-LAF.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

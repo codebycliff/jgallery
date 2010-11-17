@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -22,8 +23,10 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import model.GalleryModel;
 import model.PhotoModel;
+import org.codecompanion.ui.dialogs.LookAndFeelChooser;
 import runtime.Application;
 import runtime.Constants;
 import runtime.Constants.ConfigKeys;
@@ -263,33 +266,33 @@ public class MainView extends JFrame implements ISelectionObserver {
         mViewMenu.add(mZoomOutPhotoAction);
         mViewMenu.add(mZoomInPhotoAction);
 
-//        this.mSettingsMenu = new JMenu("Settings");
-//        LookAndFeelChooser chooser = new LookAndFeelChooser(this);
-//        for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-//            chooser.registerLookAndFeelInfo(info);
-//        }
-//        for(String key : Application.Runtime.extraLookAndFeels().keySet()) {
-//            List<LookAndFeelInfo> landfs = Application.Runtime.extraLookAndFeels().get(key);
-//            for(LookAndFeelInfo info : landfs) {
-//                chooser.registerLookAndFeelInfo(info);
-//            }
-//        }
-//        
-//        JMenu plafMenu = chooser.getChooserMenu();
-//        plafMenu.setMnemonic('L');
-//        mSettingsMenu.add(plafMenu);
+        this.mSettingsMenu = new JMenu("Settings");
+        LookAndFeelChooser chooser = new LookAndFeelChooser(this);
+        for(LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+            chooser.registerLookAndFeelInfo(info);
+        }
+        for(String key : Application.Runtime.extraLookAndFeels().keySet()) {
+            List<LookAndFeelInfo> landfs = Application.Runtime.extraLookAndFeels().get(key);
+            for(LookAndFeelInfo info : landfs) {
+                chooser.registerLookAndFeelInfo(info);
+            }
+        }
+        
+        JMenu plafMenu = chooser.getChooserMenu();
+        plafMenu.setMnemonic('L');
+        mSettingsMenu.add(plafMenu);
 
         // Help Menu
-//        this.mHelpMenu = new JMenu("Help");
+        this.mHelpMenu = new JMenu("Help");
 //        mHelpMenu.add(mShowAboutDevelopersAction);
-//        mHelpMenu.add(mShowAboutApplicationAction);
+        mHelpMenu.add(mShowAboutApplicationAction);
 
         // Add menus to menubar and set the menubar
         mMenuBar.add(mFileMenu);
         mMenuBar.add(mEditMenu);
         mMenuBar.add(mViewMenu);
-//        mMenuBar.add(mSettingsMenu);
-//        mMenuBar.add(mHelpMenu);
+        mMenuBar.add(mSettingsMenu);
+        mMenuBar.add(mHelpMenu);
 
         setJMenuBar(this.mMenuBar);
 

@@ -22,7 +22,7 @@ public abstract class DefaultItemModel implements IItemModel, IChangeBroadcaster
      */
     public DefaultItemModel() {
         mChangeObservers = new LinkedList<IChangeObserver>();
-        mName = new String();
+        mName = null;
         mDescription = new String();
     }
     

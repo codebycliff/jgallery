@@ -101,6 +101,7 @@ public class GalleryView extends JTree implements  IChangeObserver {
             }
             else if(e.getItem() == lastSelectedObject) {
                 lastSelectedNode.insert(newNode, lastSelectedNode.getChildCount());
+                mTreeModel.reload(lastSelectedNode);
             }
             else {
                 DefaultMutableTreeNode lastSelectedParent = 
@@ -110,7 +111,6 @@ public class GalleryView extends JTree implements  IChangeObserver {
                     mTreeModel.reload(lastSelectedParent);
                 }
             }
-            mTreeModel.reload();
             break;
         case RENAMED:
             if(e.getChange() == lastSelectedObject) {
@@ -340,7 +340,7 @@ public class GalleryView extends JTree implements  IChangeObserver {
                         setText(albumModel.getName());
                     }
                 }
-                
+                setToolTipText(((DefaultItemModel) selectedItem).getDescription());
             }
             return this;
         }
