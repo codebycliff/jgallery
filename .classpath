@@ -5,6 +5,5 @@
 	<classpathentry kind="lib" path="src/runtime/resources/lib/javadocking.jar"/>
 	<classpathentry kind="lib" path="src/runtime/resources/lib/metadata-extractor-2.3.1.jar"/>
 	<classpathentry kind="lib" path="src/runtime/resources/lib/JCompanion.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

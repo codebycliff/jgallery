@@ -10,16 +10,11 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
-    <path id="JUnit 4.libraryclasspath">
-        <pathelement location="../../../../../a/src/eclipse/java/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100/junit.jar"/>
-        <pathelement location="../../../../../a/src/eclipse/java/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
-    </path>
     <path id="PhotoGallery.classpath">
         <pathelement location="bin"/>
         <pathelement location="src/runtime/resources/lib/javadocking.jar"/>
         <pathelement location="src/runtime/resources/lib/metadata-extractor-2.3.1.jar"/>
         <pathelement location="src/runtime/resources/lib/JCompanion.jar"/>
-        <path refid="JUnit 4.libraryclasspath"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
